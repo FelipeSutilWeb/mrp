@@ -1,0 +1,1495 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <h:head>
+        <title> MRP_MONITOR </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://paramquery.com/pro2/Content/css6.2.4/pqgrid.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://paramquery.com/pro2/Content/css6.2.4/pqgrid.ui.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://paramquery.com/pqselect/trial/pqselect.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://paramquery.com/Content/css2.4.1/themes/Office/pqgrid.css" />
+
+        <style type="text/css">
+            body, .dropdown-item{
+                    font-size: .7rem;
+            }
+            .form-control, .btn{padding:2px;font-size: 13px;}
+            .div_menu{
+                    width: 450px;
+                    height: 262px;
+                    position: absolute;
+                    top: 120px;
+                    left: 25%;
+                    opacity: 0;
+            }
+
+            .btn-secondary {
+                color: #fff;
+                background-color: #f7f7f7;
+                border-color: #f7f7f7;
+            }
+
+            .btn-secondary:hover {
+                color: #fff;
+                background-color: #eae6e6;
+                border-color: #eae6e6;
+            }
+            
+            .btn-default {
+                border-radius: 10px 10px 0px 0px;
+                color: white; 
+                padding: 8px; 
+                margin-top: 1px; 
+                width: 82px;
+            }
+
+        </style>
+    </h:head>
+    <h:body>
+        <h:form> 
+            <p:remoteCommand name="rmd" action="#{monitorbean.getMatrix()}"></p:remoteCommand>
+        </h:form>
+        
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">MRP Monitor</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Configuración
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Something else here</a>
+              </div>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Operaciones
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Something else here</a>
+              </div>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Reportabilidad
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Something else here</a>
+              </div>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Usuario
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Something else here</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+    </nav>
+        
+    <div class="container-fluid mt-4" ng-controller="myC">
+        <form class="form-inline my-2 my-lg-0" style="display: none">
+            Material: <input class="form-control ml-4 mr-sm-2" type="search" placeholder="Search" aria-label="Search" ng-model="matnr" />
+            <button class="btn btn-outline-primary my-2 my-sm-0" data-toggle="tooltip" data-placement="right" onclick="menu(this)"><i class="material-icons" style="font-size:14px">content_copy</i></button>
+        </form>
+
+        <div class="div_menu card modal">
+            <div class="modal-header" style="background:lavender;padding:.3rem;cursor:grab;">
+                Número de material(2)<span style="float:right;font-weight:bold;cursor:pointer;" onclick="$('.div_menu').hide()">x</span>
+            </div>
+            
+            <div class="modal-body row">
+                <div class="col col-md-4 mb-2">N° Antiguo material</div><div class="col col-md-8 mb-2"><input class="form-control" /></div>
+                <div class="col col-md-4 mb-2">Text breve material</div><div class="col col-md-8 mb-2"><input class="form-control" /></div>
+                <div class="col col-md-4 mb-2">Material</div><div class="col col-md-8 mb-2"><input class="form-control" ng-model="matnr" /></div>
+                <div class="col col-md-4 mb-2">Cant máxima aciertos</div><div class="col col-md-4 mb-2"><input type="number" class="form-control" /></div>	
+	    </div>
+	</div>
+
+
+        <div class="row no-gutters" style="height: 300px">
+            <div id="left" class="col">
+                <div id="using_json_2"></div>
+            </div>
+        <div id="center" class="col">
+            <div id="matrix_mrp">
+                <table id="matrix_table" class="table table-striped table-responsive-sm" style="font-size: 10px;">
+                </table>
+            </div>
+        </div>
+            
+        <div id="right" class="col">
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-default active" id="op1" style="margin-left: 2px; background-image: linear-gradient(#16afcf, #9de8f7);">
+                    <a type="button" id="option1" onclick="opMats(1, 'mat');">Material</a>
+                </label>
+                <label class="btn btn-default" id="op2" style="margin-left: 2px; background-image: linear-gradient(#dfdfe4, #ffffff); color: black;">
+                    <a type="button" id="option2" onclick="opConsum(2, 'con');">Consum.</a>
+                </label>
+                <label class="btn btn-default" id="op3" style="margin-left: 2px; background-image: linear-gradient(#dfdfe4, #ffffff); color: black;">
+                    <a type="button" id="option3" onclick="opInvent(3, 'inv');">Invent.</a>
+                </label>
+                <label class="btn btn-default" id="op4" style="margin-left: 2px; background-image: linear-gradient(#dfdfe4, #ffffff); color: black;">
+                    <a type="button" id="option3" onclick="opRangCov(4, 'ran');">Rang. Cov.</a>
+                </label>
+            </div>
+            
+            
+            <div style="margin-left: 40px; margin-top: 5px;">
+                <a type="button" class="btn btn-secondary" id="btnBarraMats" style="color: black; padding: 5px; width: 40px;" onclick="botonBarra(1);"><i class="fas fa-chart-bar"></i></a>
+                <a type="button" class="btn btn-secondary" id="btnPieMats" style="color: black; padding: 5px; width: 40px;" onclick="botonPie(1);"><i class="fas fa-chart-pie"></i></a>
+                <a type="button" class="btn btn-secondary" id="btnAllMats" style="color: black; padding: 5px; width: 40px;" onclick="botonAll(1);"><i class="fas fa-chart-line"></i></a>
+                
+                <a type="button" class="btn btn-secondary" id="btnBarraCon" style="color: black; padding: 5px; width: 40px; display: none;" onclick="botonBarra(2);"><i class="fas fa-chart-bar"></i></a>
+                <a type="button" class="btn btn-secondary" id="btnPieCon" style="color: black; padding: 5px; width: 40px; display: none;" onclick="botonPie(2);"><i class="fas fa-chart-pie"></i></a>
+                <a type="button" class="btn btn-secondary" id="btnAllCon" style="color: black; padding: 5px; width: 40px; display: none;" onclick="botonAll(2);"><i class="fas fa-chart-line"></i></a>
+                
+                <a type="button" class="btn btn-secondary" id="btnBarraInv" style="color: black; padding: 5px; width: 40px; display: none;" onclick="botonBarra(3);"><i class="fas fa-chart-bar"></i></a>
+                <a type="button" class="btn btn-secondary" id="btnPieInv" style="color: black; padding: 5px; width: 40px; display: none;" onclick="botonPie(3);"><i class="fas fa-chart-pie"></i></a>
+                <a type="button" class="btn btn-secondary" id="btnAllInv" style="color: black; padding: 5px; width: 40px; display: none;" onclick="botonAll(3);"><i class="fas fa-chart-line"></i></a>
+                
+                <a type="button" class="btn btn-secondary" id="btnBarraRan" style="color: black; padding: 5px; width: 40px; display: none;" onclick="botonBarra(4);"><i class="fas fa-chart-bar"></i></a>
+                <a type="button" class="btn btn-secondary" id="btnPieRan" style="color: black; padding: 5px; width: 40px; display: none;" onclick="botonPie(4);"><i class="fas fa-chart-pie"></i></a>
+                <a type="button" class="btn btn-secondary" id="btnAllRan" style="color: black; padding: 5px; width: 40px; display: none;" onclick="botonAll(4);"><i class="fas fa-chart-line"></i></a>
+            </div>
+
+            <figure class="highcharts-figure" style="margin-top: 0px">           	
+                <div id="containerBarra"></div>
+                <div id="containerPie" style="display: none;"></div>
+                <div id="containerArea" style="display: none;"></div>
+                <div id="graficoTodo">
+                    <div id="containerAll" style="display: none;"></div>
+                </div>
+            </figure>
+        </div>
+
+        <div id="bottom" class="col col-12">
+            <div style="margin-top: 10px; margin-left: 15px; margin-bottom: 5px;" >
+                <a type="button" class="btn btn-secondary" id="btnVolver" style="color: black; padding: 5px; width: 40px;" onclick=""><i class="fa fa-arrow-left"></i></a>
+            	<a type="button" class="btn btn-secondary" id="btnEditar" style="color: black; padding: 5px; width: 40px;" onclick=""><i class="fas fa-pencil-ruler"></i></a>
+            	<a type="button" class="btn btn-secondary" id="btnCancelar" style="color: black; padding: 5px; width: 40px;" onclick=""><i class="fas fa-times"></i></a>                                            
+            	<a type="button" class="btn btn-secondary" id="btnGuardar" style="color: black; padding: 5px; width: 40px;" onclick=""><i class="fas fa-save"></i></a>
+            </div>
+            
+            <div class="container-fluid">
+                <table class="table-responsive" style="margin-top: 10px; margin-bottom: 10px;">
+                    <div id="example"></div>
+	        </table>
+            </div>
+        </div>
+        </div>
+    </div>
+        
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>	
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.3.5/split.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+    
+    <script type="text/javascript" src="https://paramquery.com/pqselect/trial/pqselect.min.js"></script>
+    <script type="text/javascript" src="view/pqgrid.min.js"></script>
+    <script type="text/javascript" src="view/pq-localize-en.js"></script>
+    
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-3d.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://code.highcharts.com/modules/series-label.js"></script>
+    <script src="https://kit.fontawesome.com/19d50627e7.js"></script>
+
+    <style type="text/css">
+    .split {-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;overflow-y: auto;overflow-x: hidden;}
+    .gutter {background-color: transparent;background-repeat: no-repeat;background-position: 50%;}
+    .gutter.gutter-horizontal {cursor: col-resize;background-image:  url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg=='); }
+    .gutter.gutter-vertical {cursor: row-resize;background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII='); }
+    .split.split-horizontal, .gutter.gutter-horizontal { height: 100%;float: left;}
+    .col{border: 1px solid #ccc}
+
+    #container {
+    	height: 400px; 
+    }	
+
+    .highcharts-figure, .highcharts-data-table table {
+      min-width: 310px; 
+      max-width: 800px;
+      margin: 1em auto;
+    }
+
+    .highcharts-data-table table {
+      font-family: Verdana, sans-serif;
+      border-collapse: collapse;
+      border: 1px solid #EBEBEB;
+      margin: 10px auto;
+      text-align: center;
+      width: 100%;
+      max-width: 500px;
+    }
+    .highcharts-data-table caption {
+      padding: 1em 0;
+      font-size: 1.2em;
+      color: #555;
+    }
+    .highcharts-data-table th {
+      font-weight: 600;
+      padding: 0.5em;
+    }
+    .highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
+      padding: 0.5em;
+    }
+    .highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
+      background: #f8f8f8;
+    }
+    .highcharts-data-table tr:hover {
+      background: #f1f7ff;
+    }
+
+    </style>      
+        
+    <script>
+//<![CDATA[  
+
+    rmd();
+    var sum_a; var value_a; var inv_a; var rcov_a;
+    var sum_b; var value_b; var inv_b; var rcov_b;
+    var sum_c; var value_c; var inv_c; var rcov_c;
+    var avga;  var avginva; var vla; var avg_cova;
+    var avgb;  var avginvb; var vlb; var avg_covb;
+    
+    var count_ax = 0; var count_ay = 0; var count_az = 0;
+    var count_bx = 0; var count_by = 0; var count_bz = 0;
+    var count_cx = 0; var count_cy = 0; var count_cz = 0;
+    
+    var value_ax = 0; var value_ay = 0; var value_az = 0;
+    var value_bx = 0; var value_by = 0; var value_bz = 0;
+    var value_cx = 0; var value_cy = 0; var value_cz = 0;
+        
+    var invent_ax = 0; var invent_ay = 0; var invent_az = 0;
+    var invent_bx = 0; var invent_by = 0; var invent_bz = 0;
+    var invent_cx = 0; var invent_cy = 0; var invent_cz = 0;
+    
+    var rcov_ax = 0; var rcov_ay = 0; var rcov_az = 0;
+    var rcov_bx = 0; var rcov_by = 0; var rcov_bz = 0;
+    var rcov_cx = 0; var rcov_cy = 0; var rcov_cz = 0;
+    
+    //Activa diivs rezisables
+    var splitobj = Split(["#left","#center","#right"], {
+      elementStyle: function (dimension, size, gutterSize) { 
+          $(window).trigger('resize'); // Optional
+          return {'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'}
+      },
+      gutterStyle: function (dimension, gutterSize) { return {'flex-basis':  gutterSize + 'px'} },
+      sizes: [20,50,30],
+      minSize: 150,
+      gutterSize: 6,
+      cursor: 'col-resize'
+    });
+    
+    //Componente de arbol
+    $('#using_json_2').jstree({ 'core' : {
+        'data' : [
+	           { "id" : "ajson2", "parent" : "#", "text" : "..." },
+	           { "id" : "ajson3", "parent" : "ajson2", "text" : "Result" },
+	           { "id" : "ajson3_1", "parent" : "ajson3", "text" : "Result" },
+	           { "id" : "ajson3_2", "parent" : "ajson3", "text" : "Result" },
+	           { "id" : "ajson4", "parent" : "ajson2", "text" : "Matrix" },
+	           { "id" : "ajson4_1", "parent" : "ajson4", "text" : "Matrix" },
+	           { "id" : "ajson4_2", "parent" : "ajson4", "text" : "Matrix" },
+	           { "id" : "ajson5", "parent" : "ajson2", "text" : "Filer special/error situation" },
+	           { "id" : "ajson5_1", "parent" : "ajson5", "text" : "Filer special/error situation" },
+	           { "id" : "ajson5_2", "parent" : "ajson5", "text" : "Filer special/error situation" }
+        	]
+    	} 
+    });
+    
+    //Activa highcharts Barra
+    function setCharts(chartBarraDef){
+          Highcharts.chart('containerBarra', {
+          chart: {
+              type: 'column',
+              options3d: {
+                  enabled: true,
+                  alpha: 15,
+                  beta: 15,
+                  viewDistance: 25,
+                  depth: 40
+              }
+          },
+
+          title: {
+              text: ''
+          },
+
+          xAxis: {
+              categories: ['A', 'B', 'C'],
+              labels: {
+                  skew3d: true,
+                  style: {
+                      fontSize: '16px'
+                  }
+              }
+          },
+
+          yAxis: {
+              allowDecimals: false,
+              min: 0,
+              title: {
+                  text: chartBarraDef[0][0],
+                  skew3d: true
+              }
+          },
+
+          tooltip: {
+              headerFormat: '<b>{point.key}</b><br></br>',
+              pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: {point.y} / {point.stackTotal}'
+          },
+
+          plotOptions: {
+              column: {
+                  stacking: 'normal',
+                  depth: 40
+              }
+          },
+
+          series: [{
+                    name: 'X',
+                    data: chartBarraDef[1].data,
+                    stack: 'a'
+                }, {
+                    name: 'Y',
+                    data: chartBarraDef[2].data,
+                    stack: 'b'
+                }, {
+                    name: 'Z',
+                    data: chartBarraDef[3].data,
+                    stack: 'c'
+          }],
+          colors: [
+                          '#00aaff', '#739900', '#cccc00'
+            ]
+      });
+      $('.highcharts-credits').remove();
+    }
+    
+            var chartBarraDef = [{
+                    name: 'X',
+                    data: [count_ax, count_bx, count_cx],
+                    stack: 'a'
+                }, {
+                    name: 'Y',
+                    data: [count_ay, count_by, count_cy],
+                    stack: 'b'
+                }, {
+                    name: 'Z',
+                    data: [count_az, count_bz, count_cz],
+                    stack: 'c'
+            }]; 
+    
+    //Activa highcharts Pie
+    function setChartsPie(chartPieDef){
+        Highcharts.chart('containerPie', {
+            chart: {
+	        type: 'pie',
+                options3d: {
+	            enabled: true,
+	            alpha: 45,
+	            beta: 0
+                }
+            },
+            title: {
+                text: chartPieDef[0][0]	        
+            },
+	    accessibility: {
+                point: {
+                    valueSuffix: '%'
+                }
+	    },
+            tooltip: {
+	        pointFormat: '{series.name}: <b>{point.y}</b> | <b>{point.percentage:.1f}%</b>'
+	    },
+	    plotOptions: {
+	        pie: {
+	            allowPointSelect: true,
+	            cursor: 'pointer',
+	            depth: 35,
+	            dataLabels: {
+	                enabled: true,
+	                format: '{point.name}'
+	            }
+	        }
+	    },
+	    series: [{
+	        type: 'pie',
+	        name: 'Total Material',
+	        data: [
+	            chartPieDef[1],
+	            chartPieDef[2],
+	            chartPieDef[3]
+	        ]
+	    }],
+	    colors: [
+                '#00aaff', '#739900', '#cccc00'
+            ]	                
+	});
+        $('.highcharts-credits').remove();
+    }
+    
+    var chartPieDef = [
+	            ['A', sum_a],
+	            ['B', sum_b],
+	            ['C', 0]
+	        ];
+    
+    //Activa highcharts Linea
+    function setChartsAll(chartAllDef){
+
+        $('#graficoTodo').find('div').remove();
+        var $container = $('<div></div>').appendTo('#graficoTodo');
+
+        window.chart = new Highcharts.Chart({
+            chart: {
+                renderTo: $container[0],
+                height: 400
+            },
+            title: {
+                text: ''
+            },
+            xAxis: {
+                categories: ['A', 'B', 'C']
+            },
+            yAxis: {
+              allowDecimals: false,
+              min: 0,
+              title: {
+                  text: chartAllDef[0][0],
+                  skew3d: true
+              }
+            },
+            labels: {
+                items: [{
+                    html: "Suma Material ABC",
+                    style: {
+                        left: '160px',
+                        top: '20px',
+                        color: 'black'
+                    }
+                }]
+            },
+            series: [{
+                type: 'column',
+                name: 'X',
+                data: chartAllDef[2].data
+            }, {
+                type: 'column',
+                name: 'Y',
+                data: chartAllDef[3].data
+            }, {
+                type: 'column',
+                name: 'Z',
+                data: chartAllDef[4].data
+            }, {
+                type: 'spline',
+                name: 'Promedio',
+                data: chartAllDef[5].data,
+            marker: {
+                lineWidth: 2,
+                lineColor: Highcharts.getOptions().colors[3],
+                fillColor: 'white'
+            }
+            }, {
+                type: 'pie',
+                name: chartAllDef[7][0],
+                data: [{
+                    name: 'A',
+                    y: chartAllDef[6].data[0].y,
+                    color: '#00aaff' // Jane's color
+                }, {
+                    name: 'B',
+                    y: chartAllDef[6].data[1].y,
+                    color: '#739900' // John's color
+                }, {
+                    name: 'C',
+                    y: chartAllDef[6].data[2].y,
+                    color: '#cccc00' // Joe's color
+                }],
+                    center: [210, 80],
+                    size: 100,
+                    showInLegend: false,
+                dataLabels: {
+                    enabled: false
+                }
+            }],
+            colors: [
+                '#00aaff', '#739900', '#cccc00'
+            ]
+        });
+        $('.highcharts-credits').remove();
+    }
+    
+    var chartAllDef = [{
+                type: 'column',
+                name: 'X',
+                data: [count_ax, count_bx, count_cx]
+            }, {
+                type: 'column',
+                name: 'Y',
+                data: [count_ay, count_by, count_cy]
+            }, {
+                type: 'column',
+                name: 'Z',
+                data: [count_az, count_bz, count_cz]
+            }, {
+                type: 'spline',
+                name: 'Promedio',
+                data: [avga, avgb, 0],
+            marker: {
+                lineWidth: 2,
+                lineColor: Highcharts.getOptions().colors[3],
+                fillColor: 'white'
+            }
+            }, {
+                type: 'pie',
+                name: 'Total consumption',
+                data: [{
+                    name: 'X',
+                    y: sum_a,
+                    color: '#00aaff' // Jane's color
+                }, {
+                    name: 'Y',
+                    y: sum_b,
+                    color: '#739900' // John's color
+                }, {
+                    name: 'Z',
+                    y: 0,
+                    color: '#cccc00' // Joe's color
+                }],
+                    center: [120, 80],
+                    size: 100,
+                    showInLegend: false,
+                dataLabels: {
+                    enabled: false
+                }
+            }];
+    
+    //Activa la funcion draggable y el tooltip
+    $(function () {
+        $('.modal').draggable({handle:'.modal-header'});
+        $('[data-toggle="tooltip"]').tooltip({trigger:'click',html:true});
+    })
+    //Funcion activa el menu
+    function menu(e) {
+        $('.div_menu').show();
+        $('.div_menu').animate({'opacity': 1})
+    }
+    
+    angular.module('myApp', [])
+        .controller('myC', function($http, $scope){
+        /*$http.get("//cors-anywhere.herokuapp.com/http://sapsg.spdns.org:8095/Inventario/rest.xhtml?jsonStr=KPT40B1ESLP051359")
+            .then(function(response){
+            $scope.datos = response.data;
+        })*/
+    });
+    
+    function setGetMatrix(arr){       
+        arr.forEach(function (i, x){           
+            if(i['XYZ'] == "X"){ 
+                if(i['ABC'] == 'A' ){ count_ax += 1; value_ax += parseFloat(i['ABC_VALUE']); invent_ax += parseFloat(i['VALSTCKVAL']); /*rcov_ax += parseFloat(i['rangeCov']);*/ }
+                if(i['ABC'] == 'B' ){ count_bx += 1; value_bx += parseFloat(i['ABC_VALUE']); invent_bx += parseFloat(i['VALSTCKVAL']); /*rcov_bx += parseFloat(i['rangeCov']);*/ }
+                if(i['ABC'] == 'C' ){ count_cx += 1; value_cx += parseFloat(i['ABC_VALUE']); invent_cx += parseFloat(i['VALSTCKVAL']); /*rcov_cx += parseFloat(i['rangeCov']);*/ }
+            }
+            if(i['XYZ'] == "Y"){ 
+                if(i['ABC'] == 'A' ){ count_ay += 1; value_ay += parseFloat(i['ABC_VALUE']); invent_ay += parseFloat(i['VALSTCKVAL']); /*rcov_ay += parseFloat(i['rangeCov']);*/ }
+                if(i['ABC'] == 'B' ){ count_by += 1; value_by += parseFloat(i['ABC_VALUE']); invent_by += parseFloat(i['VALSTCKVAL']); /*rcov_by += parseFloat(i['rangeCov']);*/ }
+                if(i['ABC'] == 'C' ){ count_cy += 1; value_cy += parseFloat(i['ABC_VALUE']); invent_cy += parseFloat(i['VALSTCKVAL']); /*rcov_cy += parseFloat(i['rangeCov']);*/ }
+            }
+            if(i['XYZ'] == "Z"){ 
+                if(i['ABC'] == 'A' ){ count_az += 1; value_az += parseFloat(i['ABC_VALUE']); invent_az += parseFloat(i['VALSTCKVAL']); /*rcov_az += parseFloat(i['rangeCov']);*/ }
+                if(i['ABC'] == 'B' ){ count_bz += 1; value_bz += parseFloat(i['ABC_VALUE']); invent_bz += parseFloat(i['VALSTCKVAL']); /*rcov_bz += parseFloat(i['rangeCov']);*/ }
+                if(i['ABC'] == 'C' ){ count_cz += 1; value_cz += parseFloat(i['ABC_VALUE']); invent_cz += parseFloat(i['VALSTCKVAL']); /*rcov_cz += parseFloat(i['rangeCov']);*/ }
+            }
+        });
+        
+        sum_a = parseInt(count_ax) + parseInt(count_ay) + parseInt(count_az);
+        sum_b = parseInt(count_bx) + parseInt(count_by) + parseInt(count_bz);
+        sum_c = parseInt(count_cx) + parseInt(count_cy) + parseInt(count_cz);
+        
+        value_a = parseFloat(value_ax) + parseFloat(value_ay) + parseFloat(value_az);
+        value_b = parseFloat(value_bx) + parseFloat(value_by) + parseFloat(value_bz);
+        value_c = parseInt(value_cx) + parseInt(value_cy) + parseInt(value_cz);
+        
+        inv_a = parseFloat(invent_ax) + parseFloat(invent_ay) + parseFloat(invent_az);
+        inv_b = parseFloat(invent_bx) + parseFloat(invent_by) + parseFloat(invent_bz);
+        inv_c = parseInt(invent_cx) + parseInt(invent_cy) + parseInt(invent_cz);
+        
+        rcov_a = parseFloat(rcov_ax) + parseFloat(rcov_ay) + parseFloat(rcov_az);
+        rcov_b = parseFloat(rcov_bx) + parseFloat(rcov_by) + parseFloat(rcov_bz);
+        rcov_c = parseInt(rcov_cx) + parseInt(rcov_cy) + parseInt(rcov_cz);
+        
+        avga = sum_a / 3; vla = value_a / 3; avginva = inv_a / 3; avg_cova = rcov_a / 3;
+        avgb = sum_b / 3; vlb = value_b / 3; avginvb = inv_b / 3; avg_covb = rcov_b / 3;
+        
+        var matrix = [
+            [' ', count_ax, count_ay, count_az, sum_a, 'Materiales'],
+            ['A', value_ax, value_ay, value_az, value_a, 'Sum Consum'],
+            [' ', invent_ax, invent_ay, invent_az, inv_a, 'Sum Invent'],
+            [' ', rcov_ax, rcov_ay, rcov_az, rcov_a, 'Rang. cov' ],
+            [' ', count_bx, count_by, count_bz, sum_b, 'Materiales'],
+            ['B', value_bx, value_by, value_bz, value_b, 'Sum Consum'],
+            [' ', invent_bx, invent_by, invent_bz, inv_b, 'Sum Invent'],
+            [' ', rcov_bx, rcov_by, rcov_bz, rcov_b, 'Rang. cov' ]
+        ];
+
+        var matrix_th = [
+            ['#', 'X', 'Y', 'Z', 'SUM', 'Key Figure']
+        ];
+			
+        $('#matrix_table').append('<thead><tr></tr></thead><tbody></tbody>');
+
+        matrix_th.forEach(function (i, x){
+            $('#matrix_table thead tr').append('<th> ' + i[0] + ' </th><th> ' + i[1] + ' </th><th> ' + i[2] + ' </th><th> ' + i[3] + ' </th><th> ' + i[4] + ' </th><th> ' + i[5] + ' </th>');
+        });
+
+        matrix.forEach(function (i, x){
+            $('#matrix_table tbody').append('<tr><td> ' + i[0] + ' </td><td> ' + i[1] + ' </td><td> ' + i[2] + ' </td><td> ' + i[3] + ' </td><td> ' + i[4] + ' </td><td><b> ' + i[5] + ' </b></td></tr>');
+        });
+        
+                $('#example').remove();
+                $('#example').show();
+                $('.table-responsive').append("<div id='example'></div>");
+
+                //define custom condition.        
+                pq.filter.conditions.notbetween = {
+                    filter: {
+                        type: 'textbox2', //type of UI control.
+                        init: pq.filter.datepicker //use inbuilt init callback.
+                    },
+                    number: 1, date: 1,//condition applicable to number and date dataType
+                    compare: function (cellData, val, val2) {
+                        //debugger;
+                        return (cellData < val || cellData > val2);
+                    }
+                }
+
+                //define localization string for custom condition.        
+                $.paramquery.pqGrid.defaults.strConditions.notbetween = "Not between";
+
+
+                //define colModel
+                var colM = [
+                    { title: "MATERIAL", dataIndx: "MATNR", cls:"matnr_code", width: "5%",
+                        filter: {crules: [{condition: 'contain' }] }
+                    },              
+                    { title: "PLANTA", dataIndx: "PLANTA", cls: "planta_code", width: "5%",
+                        filter: { crules: [{condition: 'contain' }] }
+                    },
+                    { title: "DESCR", dataIndx: "DESCR", cls: "descr_code", width: "10%",
+                        filter: { crules: [{condition: 'contain' }] }
+                    },
+                    { title: "ABC", dataIndx: "ABC", cls: "abc_code", width: "5%",
+                        filter: { crules: [{condition: 'contain' }] }
+                    },
+                    { title: "XYZ", dataIndx: "XYZ", cls: "xyz_code", width: "5%",
+                        filter: { crules: [{condition: 'contain' }] }
+                    },
+                    { title: "ABC_VALUE", dataIndx: "ABC_VALUE", cls: "abcva_code", width: "10%",
+                        filter: { crules: [{condition: 'contain' }] }
+                    },
+                    { title: "XYZ_AMOUNT", dataIndx: "XYZ_AMOUNT", cls: "xyzam_code", width: "10%",
+                        filter: { crules: [{condition: 'contain' }] }
+                    },
+                    { title: "PROMEDIO", dataIndx: "AVG", cls: "avg_code", width: "10%",
+                        filter: { crules: [{condition: 'contain' }] }
+                    },
+                    { title: "RANGO", dataIndx: "RANGO", cls: "rango_code", width: "10%",
+                        filter: { crules: [{condition: 'contain' }] }
+                    },
+                    { title: "COMENTARIO", dataIndx: "COMENT", cls: "coment_code", width: "10%",
+                        filter: { crules: [{condition: 'contain' }] }
+                    },
+                    { title: "MTyp", dataIndx: "MTyp", cls: "mtyp_code", width: "5%",
+                        filter: { crules: [{condition: 'contain' }] }
+                    },
+                    { title: "ValStock", dataIndx: "VALSTCKVAL", cls: "valstck_code", width: "8%",
+                        filter: { crules: [{condition: 'contain' }] }
+                    },
+                    { title: "Currency", dataIndx: "CRCY", cls: "crcy_code", width: "5%",
+                        filter: { crules: [{condition: 'contain' }] }
+                    }
+                ];
+                var obj = {
+                    height: 400,
+                    colModel: colM,  
+                    dataModel: {
+                        data: arr
+                        //url: "/pro/orders/get",//for ASP.NET
+                        //url: "/orders.php", //for PHP
+                    },
+                    //scrollModel: {autoFit: true},          
+                    flex: {one: true},
+                    pageModel: { type: "local", rPP: 20, rPPOptions: [10, 50, 100, 500, 1000] },            
+                    showBottom: true,            
+                    wrap: false, hwrap: false,
+                    editable: false,
+                    selectionModel: { type: 'row' },
+                    resizable: true,
+                    rowSelect: function (evt, ui) {
+                        console.log('rowSelect', ui);
+                        var str = JSON.stringify(ui, function(key, value){                    
+                            if( key.indexOf("pq_") !== 0){
+                                return value;
+                            }
+                        }, 2)
+                            //nem = ui.addList[0].rowData['N_EMBARQUE'];
+                            //vem = ui.addList[0].rowData['VIAJE'];
+                            //getDataRowBtn(nem, vem);
+                    },
+                    filterModel: { 
+                        on: true, 
+                        mode: "AND", 
+                        header: true,
+                        menuIcon: true,
+                        gridOptions: {
+                            numberCell: {show: false},
+                            width: 'flex',
+                            flex: {one: true}
+                        }
+                    },
+                    menuIcon: true,
+                    numberCell: { show: true },            
+                    formulas:[["diff_date", function( rd ){
+                        var oneDay = 24*60*60*1000,
+                            firstDate = new Date(rd.ShippedDate),
+                            secondDate = new Date(rd.OrderDate),
+                            diff = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));            
+                        if( !isNaN(diff) ){
+                            return diff;
+                        }
+                    }]],
+                    toolbar: {
+                        cls: 'pq-toolbar',
+                        items: [
+                            {
+                                type: 'select',
+                                cls:'rpp',
+                                label: "",
+                                options: [20, 50, 100, 1000],
+                                listener: function(evt) {
+                                    this.option('pageModel.rPP', $(evt.target).val())
+                                    this.refreshDataAndView();
+                                }
+                            },
+                            {
+                                type: 'textbox',
+                                cls: 'curpage',
+                                label: "Página N°: ",
+                                listener: function(evt) {
+                                    this.goToPage({page:$(evt.target).val()})
+                                }
+                            },
+                            { type: 'separator'},
+                            {
+                                type: 'button',
+                                label: "Anterior",
+                                cls:'prev btn btn-light',
+                                listener: function() {
+                                    var page = this.option('pageModel.curPage');
+                                    this.goToPage({page: page-1})
+                                }
+                            },
+                            {
+                                type: 'button',
+                                label: "Siguiente",
+                                cls:'next btn btn-light',
+                                listener: function() {
+                                    var page = this.option('pageModel.curPage');
+                                    this.goToPage({page: page+1})
+                                }
+                            }
+                        ]
+                    }
+
+                };
+                obj.columnOrder = function(event, ui){
+                   setTimeout(function(){
+                       $('body').find('.btn_act:eq(1) span').remove();
+                       $('body').find('.btn_act:eq(0) span.pq-menu-icon').remove();
+                       return true;
+                   }, 100);
+
+               }
+
+                obj.refresh = function(event, ui){
+                   setTimeout(function(){
+                       $('body').find('.btn_act:eq(1) span').remove();
+                       $('body').find('.btn_act:eq(0) span.pq-menu-icon').remove();
+                       return true;
+                   }, 100);
+
+               }
+                obj.beforeSort = function(event, ui){
+                   setTimeout(function(){
+                       $('body').find('.btn_act:eq(1) span').remove();
+                       $('body').find('.btn_act:eq(0) span.pq-menu-icon').remove();
+                       return true;
+                   }, 100);
+
+               }   
+                
+                $("#example").pqGrid(obj);
+        
+                $('body').find('div').last().hide();
+                $('body').find('.btn_act:eq(1) span').remove();
+                $('body').find('.btn_act:eq(0) span.pq-menu-icon').remove();
+                    
+                chartBarra = [
+                    ['Cantidad Materiales'],
+                    {
+                    name: 'X',
+                    data: [count_ax, count_bx, count_cx],
+                    stack: 'a'
+                }, {
+                    name: 'Y',
+                    data: [count_ay, count_by, count_cy],
+                    stack: 'b'
+                }, {
+                    name: 'Z',
+                    data: [count_az, count_bz, count_cz],
+                    stack: 'c'
+                }];
+                
+                setCharts(chartBarra);
+    }
+    
+    //var onThis;
+    //Option 1
+    function opMats(a, tipo){
+        $('#containerBarra').show();
+        $('#containerPie').hide();
+        $('#graficoTodo').hide();
+        //borra y cambia el estilo del Option 1
+        $('#op1').removeAttr('style');
+        $('#op1').attr('style', 'margin-left: 2px; background-image: linear-gradient(#16afcf, #9de8f7);');
+        
+        //borra y cambia el estilo del Option 2
+        $('#op2').removeAttr('style');
+        $('#op2').attr('style', 'margin-left: 2px; background-image: linear-gradient(#dfdfe4, #ffffff); color: black;');
+        
+        //borra y cambia el estilo del Option 3
+        $('#op3').removeAttr('style');
+        $('#op3').attr('style', 'margin-left: 2px; background-image: linear-gradient(#dfdfe4, #ffffff); color: black;');
+        
+        //borra y cambia el estilo del Option 4
+        $('#op4').removeAttr('style');
+        $('#op4').attr('style', 'margin-left: 2px; background-image: linear-gradient(#dfdfe4, #ffffff); color: black;'); 
+        
+        multiCharts(a, tipo);
+    }
+    
+    //Option 2
+    function opConsum(b, tipo){
+        $('#containerBarra').show();
+        $('#containerPie').hide();
+        $('#graficoTodo').hide();
+        //borra y cambia el estilo del Option 1
+        $('#op1').removeAttr('style');
+        $('#op1').attr('style', 'margin-left: 2px; background-image: linear-gradient(#dfdfe4, #ffffff); color: black;');
+        
+        //borra y cambia el estilo del Option 2
+        $('#op2').removeAttr('style');
+        $('#op2').attr('style', 'margin-left: 2px; background-image: linear-gradient(#16afcf, #9de8f7);');
+        
+        //borra y cambia el estilo del Option 3
+        $('#op3').removeAttr('style');
+        $('#op3').attr('style', 'margin-left: 2px; background-image: linear-gradient(#dfdfe4, #ffffff); color: black;');
+        
+        //borra y cambia el estilo del Option 4
+        $('#op4').removeAttr('style');
+        $('#op4').attr('style', 'margin-left: 2px; background-image: linear-gradient(#dfdfe4, #ffffff); color: black;');
+        
+        multiCharts(b, tipo);
+    }
+    
+    //Option 3
+    function opInvent(c, tipo){
+        $('#containerBarra').show();
+        $('#containerPie').hide();
+        $('#graficoTodo').hide();
+        //borra y cambia el estilo del Option 1
+        $('#op1').removeAttr('style');
+        $('#op1').attr('style', 'margin-left: 2px; background-image: linear-gradient(#dfdfe4, #ffffff); color: black;');
+        
+        //borra y cambia el estilo del Option 2
+        $('#op2').removeAttr('style');
+        $('#op2').attr('style', 'margin-left: 2px; background-image: linear-gradient(#dfdfe4, #ffffff); color: black;');
+        
+        //borra y cambia el estilo del Option 3
+        $('#op3').removeAttr('style');
+        $('#op3').attr('style', 'margin-left: 2px; background-image: linear-gradient(#16afcf, #9de8f7);');
+        
+        //borra y cambia el estilo del Option 4
+        $('#op4').removeAttr('style');
+        $('#op4').attr('style', 'margin-left: 2px; background-image: linear-gradient(#dfdfe4, #ffffff); color: black;');
+        
+        multiCharts(c, tipo);
+    }
+    
+    //Option 4
+    function opRangCov(d, tipo){
+        $('#containerBarra').show();
+        $('#containerPie').hide();
+        $('#graficoTodo').hide();
+        //borra y cambia el estilo del Option 1
+        $('#op1').removeAttr('style');
+        $('#op1').attr('style', 'margin-left: 2px; background-image: linear-gradient(#dfdfe4, #ffffff); color: black;');
+        
+        //borra y cambia el estilo del Option 2
+        $('#op2').removeAttr('style');
+        $('#op2').attr('style', 'margin-left: 2px; background-image: linear-gradient(#dfdfe4, #ffffff); color: black;');
+        
+        //borra y cambia el estilo del Option 3
+        $('#op3').removeAttr('style');
+        $('#op3').attr('style', 'margin-left: 2px; background-image: linear-gradient(#dfdfe4, #ffffff); color: black;');
+        
+        //borra y cambia el estilo del Option 4
+        $('#op4').removeAttr('style');
+        $('#op4').attr('style', 'margin-left: 2px; background-image: linear-gradient(#16afcf, #9de8f7);');
+        
+        multiCharts(d, tipo);
+    }
+    
+    var chartBarra;
+    var chartPie;
+    var chartAll;
+    function multiCharts(valor, tipo){
+        if (valor == 1 && tipo == 'mat'){
+            
+            //Button Op1
+            $('#btnBarraMats').show();
+            $('#btnPieMats').show();
+            $('#btnAllMats').show();
+            //Button Op2
+            $('#btnBarraCon').hide();
+            $('#btnPieCon').hide();
+            $('#btnAllCon').hide();
+            //Button Op3
+            $('#btnBarraInv').hide();
+            $('#btnPieInv').hide();
+            $('#btnAllInv').hide();
+            //Button Op4
+            $('#btnBarraRan').hide();
+            $('#btnPieRan').hide();
+            $('#btnAllRan').hide();
+            
+            chartBarra = [
+                ['Cantidad Materiales'],
+                {
+                    name: 'X',
+                    data: [count_ax, count_bx, count_cx],
+                    stack: 'a'
+                }, {
+                    name: 'Y',
+                    data: [count_ay, count_by, count_cy],
+                    stack: 'b'
+                }, {
+                    name: 'Z',
+                    data: [count_az, count_bz, count_cz],
+                    stack: 'c'
+                }];
+            
+            chartPie =  [
+                    ['Suma Material ABC'],
+	            ['A', sum_a],
+	            ['B', sum_b],
+	            ['C', 0]
+	        ];
+                
+        chartAll = [
+            ['Cantidad Materiales'],
+            ['Suma Material ABC'],
+            {
+                type: 'column',
+                name: 'X',
+                data: [count_ax, count_bx, count_cx]
+            }, {
+                type: 'column',
+                name: 'Y',
+                data: [count_ay, count_by, count_cy]
+            }, {
+                type: 'column',
+                name: 'Z',
+                data: [count_az, count_bz, count_cz]
+            }, {
+                type: 'spline',
+                name: 'Promedio',
+                data: [avga, avgb, 0],
+            marker: {
+                lineWidth: 2,
+                lineColor: Highcharts.getOptions().colors[3],
+                fillColor: 'white'
+            }
+            }, {
+                type: 'pie',
+                name: 'Suma Material ABC',
+                data: [{
+                    name: 'A',
+                    y: sum_a,
+                    color: '#00aaff' // Jane's color
+                }, {
+                    name: 'B',
+                    y: sum_b,
+                    color: '#739900' // John's color
+                }, {
+                    name: 'C',
+                    y: 0,
+                    color: '#cccc00' // Joe's color
+                }],
+                    center: [120, 80],
+                    size: 100,
+                    showInLegend: false,
+                dataLabels: {
+                    enabled: false
+                }
+            },
+            ['Total XYZ']
+        ];
+            
+            setCharts(chartBarra);
+            setChartsPie(chartPie);
+            setChartsAll(chartAll);
+        }
+        if (valor == 2 && tipo == 'con'){
+            
+            //Button Op1
+            $('#btnBarraMats').hide();
+            $('#btnPieMats').hide();
+            $('#btnAllMats').hide();
+            //Button Op2
+            $('#btnBarraCon').show();
+            $('#btnPieCon').show();
+            $('#btnAllCon').show();
+            //Button Op3
+            $('#btnBarraInv').hide();
+            $('#btnPieInv').hide();
+            $('#btnAllInv').hide();
+            //Button Op4
+            $('#btnBarraRan').hide();
+            $('#btnPieRan').hide();
+            $('#btnAllRan').hide();
+            
+            chartBarra = [
+                ['Cantidad Consumo'],
+                {
+                    name: 'X',
+                    data: [value_ax, value_bx, value_cx],
+                    stack: 'a'
+                }, {
+                    name: 'Y',
+                    data: [value_ay, value_by, count_cy],
+                    stack: 'b'
+                }, {
+                    name: 'Z',
+                    data: [value_az, value_bz, value_cz],
+                    stack: 'c'
+                }];
+                
+                chartPie =  [
+                    ['Suma Consumo ABC'],
+	            ['A', value_a],
+	            ['B', value_b],
+	            ['C', 0]
+	        ];
+                
+        chartAll = [
+            ['Cantidad Consumo'],
+            ['Suma Consumo ABC'],
+            {
+                type: 'column',
+                name: 'X',
+                data: [value_ax, value_bx, value_cx]
+            }, {
+                type: 'column',
+                name: 'Y',
+                data: [value_ay, value_by, count_cy]
+            }, {
+                type: 'column',
+                name: 'Z',
+                data: [value_az, value_bz, value_cz]
+            }, {
+                type: 'spline',
+                name: 'Promedio',
+                data: [vla, vlb, 0],
+            marker: {
+                lineWidth: 2,
+                lineColor: Highcharts.getOptions().colors[3],
+                fillColor: 'white'
+            }
+            }, {
+                type: 'pie',
+                name: 'Total consumption',
+                data: [{
+                    name: 'X',
+                    y: value_a,
+                    color: '#00aaff' // Jane's color
+                }, {
+                    name: 'Y',
+                    y: value_b,
+                    color: '#739900' // John's color
+                }, {
+                    name: 'Z',
+                    y: 0,
+                    color: '#cccc00' // Joe's color
+                }],
+                    center: [120, 80],
+                    size: 100,
+                    showInLegend: false,
+                dataLabels: {
+                    enabled: false
+                }
+            },
+            ['Total XYZ']
+        ];
+                
+            setCharts(chartBarra);
+            setChartsPie(chartPie);
+            setChartsAll(chartAll);
+        }
+        if (valor == 3 && tipo == 'inv'){
+            
+            //Button Op1
+            $('#btnBarraMats').hide();
+            $('#btnPieMats').hide();
+            $('#btnAllMats').hide();
+            //Button Op2
+            $('#btnBarraCon').hide();
+            $('#btnPieCon').hide();
+            $('#btnAllCon').hide();
+            //Button Op3
+            $('#btnBarraInv').show();
+            $('#btnPieInv').show();
+            $('#btnAllInv').show();
+            //Button Op4
+            $('#btnBarraRan').hide();
+            $('#btnPieRan').hide();
+            $('#btnAllRan').hide();
+            
+        chartBarra = [
+                ['Cantidad Invent'],
+                {
+                    name: 'X',
+                    data: [invent_ax, invent_bx, invent_cx],
+                    stack: 'a'
+                }, {
+                    name: 'Y',
+                    data: [invent_ay, invent_by, invent_cy],
+                    stack: 'b'
+                }, {
+                    name: 'Z',
+                    data: [invent_az, invent_bz, invent_cz],
+                    stack: 'c'
+                }];
+                
+        chartPie =  [
+                    ['Suma Invent ABC'],
+	            ['A', inv_a],
+	            ['B', inv_b],
+	            ['C', 0]
+	        ];
+                
+        chartAll = [
+            ['Cantidad Invent'],
+            ['Suma Invent ABC'],
+            {
+                type: 'column',
+                name: 'X',
+                data: [invent_ax, invent_bx, invent_cx]
+            }, {
+                type: 'column',
+                name: 'Y',
+                data: [invent_ay, invent_by, invent_cy]
+            }, {
+                type: 'column',
+                name: 'Z',
+                data: [invent_az, invent_bz, invent_cz]
+            }, {
+                type: 'spline',
+                name: 'Promedio',
+                data: [avginva, avginvb, 0],
+            marker: {
+                lineWidth: 2,
+                lineColor: Highcharts.getOptions().colors[3],
+                fillColor: 'white'
+            }
+            }, {
+                type: 'pie',
+                name: 'Total consumption',
+                data: [{
+                    name: 'X',
+                    y: inv_a,
+                    color: '#00aaff' // Jane's color
+                }, {
+                    name: 'Y',
+                    y: inv_b,
+                    color: '#739900' // John's color
+                }, {
+                    name: 'Z',
+                    y: 0,
+                    color: '#cccc00' // Joe's color
+                }],
+                    center: [120, 80],
+                    size: 100,
+                    showInLegend: false,
+                dataLabels: {
+                    enabled: false
+                }
+            },
+            ['Total XYZ']
+        ];
+                
+            setCharts(chartBarra);
+            setChartsPie(chartPie);
+            setChartsAll(chartAll);
+        }
+        if (valor == 4 && tipo == 'ran'){
+            //Button Op1
+            $('#btnBarraMats').hide();
+            $('#btnPieMats').hide();
+            $('#btnAllMats').hide();
+            //Button Op2
+            $('#btnBarraCon').hide();
+            $('#btnPieCon').hide();
+            $('#btnAllCon').hide();
+            //Button Op3
+            $('#btnBarraInv').hide();
+            $('#btnPieInv').hide();
+            $('#btnAllInv').hide();
+            //Button Op4
+            $('#btnBarraRan').show();
+            $('#btnPieRan').show();
+            $('#btnAllRan').show();
+            
+        chartBarra = [
+                ['Rango Periodos'],
+                {
+                    name: 'X',
+                    data: [rcov_ax, rcov_bx, rcov_cx],
+                    stack: 'a'
+                }, {
+                    name: 'Y',
+                    data: [rcov_ay, rcov_by, rcov_cy],
+                    stack: 'b'
+                }, {
+                    name: 'Z',
+                    data: [rcov_az, rcov_bz, rcov_cz],
+                    stack: 'c'
+                }];
+                
+        chartPie =  [
+                    ['Suma Rang. Cov. ABC'],
+	            ['A', rcov_a],
+	            ['B', rcov_b],
+	            ['C', 0]
+	        ];
+                
+        chartAll = [
+            ['Rango Periodos'],
+            ['Suma Rang. Cov. ABC'],
+            {
+                type: 'column',
+                name: 'X',
+                data: [rcov_ax, rcov_bx, rcov_cx]
+            }, {
+                type: 'column',
+                name: 'Y',
+                data: [rcov_ay, rcov_by, rcov_cy]
+            }, {
+                type: 'column',
+                name: 'Z',
+                data: [rcov_az, rcov_bz, rcov_cz]
+            }, {
+                type: 'spline',
+                name: 'Promedio',
+                data: [avg_cova, avg_covb, 0],
+            marker: {
+                lineWidth: 2,
+                lineColor: Highcharts.getOptions().colors[3],
+                fillColor: 'white'
+            }
+            }, {
+                type: 'pie',
+                name: 'Total consumption',
+                data: [{
+                    name: 'X',
+                    y: rcov_a,
+                    color: '#00aaff' // Jane's color
+                }, {
+                    name: 'Y',
+                    y: rcov_b,
+                    color: '#739900' // John's color
+                }, {
+                    name: 'Z',
+                    y: 0,
+                    color: '#cccc00' // Joe's color
+                }],
+                    center: [120, 80],
+                    size: 100,
+                    showInLegend: false,
+                dataLabels: {
+                    enabled: false
+                }
+            },
+            ['Total XYZ']
+        ];
+                
+            setCharts(chartBarra);
+            setChartsPie(chartPie);
+            setChartsAll(chartAll);
+        }
+    }
+    
+    function botonBarra(valor){ 
+        if (valor == 1){ 
+            $('#containerBarra').show();
+            $('#containerPie').hide();
+            $('#graficoTodo').hide();
+            
+            multiCharts(1, 'mat'); 
+            setCharts(chartBarra); 
+        }
+        if (valor == 2){ 
+            $('#containerBarra').show();
+            $('#containerPie').hide();
+            $('#graficoTodo').hide();
+            
+            multiCharts(2, 'con'); 
+            setCharts(chartBarra); 
+        }
+        if (valor == 3){ 
+            $('#containerBarra').show();
+            $('#containerPie').hide();
+            $('#graficoTodo').hide();
+            
+            multiCharts(3, 'inv'); 
+            setCharts(chartBarra); 
+        }
+        if (valor == 4){
+            $('#containerBarra').show();
+            $('#containerPie').hide();
+            $('#graficoTodo').hide();
+            
+            multiCharts(4, 'ran'); 
+            setCharts(chartBarra); 
+        }
+    }
+    
+    function botonPie(valor){
+        if (valor == 1){ 
+            $('#containerBarra').hide();
+            $('#containerPie').show();
+            $('#graficoTodo').hide();
+            
+            multiCharts(1, 'mat'); 
+            setChartsPie(chartPie); 
+        }
+        if (valor == 2){ 
+            $('#containerBarra').hide();
+            $('#containerPie').show();
+            $('#graficoTodo').hide();
+            
+            multiCharts(2, 'con'); 
+            setChartsPie(chartPie); 
+        }
+        if (valor == 3){ 
+            $('#containerBarra').hide();
+            $('#containerPie').show();
+            $('#graficoTodo').hide();
+            
+            multiCharts(3, 'inv'); 
+            setChartsPie(chartPie); 
+        }
+        if (valor == 4){ 
+            $('#containerBarra').hide();
+            $('#containerPie').show();
+            $('#graficoTodo').hide();
+            
+            multiCharts(4, 'ran'); 
+            setChartsPie(chartPie); 
+        }
+    }
+    
+    function botonAll(valor){
+        if (valor == 1){ 
+            $('#containerBarra').hide();
+            $('#containerPie').hide();
+            $('#graficoTodo').show();
+            
+            multiCharts(1, 'mat');
+            setChartsAll(chartAll); 
+        }
+        if (valor == 2){ 
+            $('#containerBarra').hide();
+            $('#containerPie').hide();
+            $('#graficoTodo').show();
+            
+            multiCharts(2, 'con');
+            setChartsAll(chartAll); 
+        }
+        if (valor == 3){
+            $('#containerBarra').hide();
+            $('#containerPie').hide();
+            $('#graficoTodo').show();
+            
+            multiCharts(3, 'inv');
+            setChartsAll(chartAll);
+        }
+        if (valor == 4){ 
+            $('#containerBarra').hide();
+            $('#containerPie').hide();
+            $('#graficoTodo').show();
+            
+            multiCharts(4, 'ran');
+            setChartsAll(chartAll); 
+        }
+    }
+//]]>   
+    </script>
+    
+
+    </h:body>
+</html>

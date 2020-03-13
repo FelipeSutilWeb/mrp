@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Subir datos</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" />
+        
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        
+        
+        <style type="text/css">
+            .btn-secondary {
+                color: #fff;
+                background-color: #f7f7f7;
+                border-color: #f7f7f7;
+            }
+
+            .btn-secondary:hover {
+                color: #fff;
+                background-color: #eae6e6;
+                border-color: #eae6e6;
+            }
+            
+            .btn-default {
+                border-radius: 10px 10px 0px 0px;
+                color: white; 
+                padding: 8px; 
+                margin-top: 1px; 
+                width: 82px;
+            }
+        </style>
+    </h:head>
+    
+    <h:body>
+        <h:form> 
+            <p:remoteCommand name="cargarmd" action="#{monitorbean.upDataExcel()}"></p:remoteCommand>
+            <p:remoteCommand name="obtData" action="#{monitorbean.getDataExcel()}"></p:remoteCommand>
+        </h:form>
+        
+    <div id="main-wrapper">
+        <div class="page-wrapper">
+            <br></br>
+            <div class="container-fluid">                            
+                <div class="row">
+                    <div class="col-12">
+                        <form name="form1">
+                            <div id="excel">
+                               Subir Excel:
+                                <input type="file" id="files"  name="files[]" onchange="getFlow(this);" /> 
+                            </div>
+                            
+                            <div id="total" style="margin-top: 10px;">
+                                Cantidad Consumo total: <a id="total_cons"></a>
+                            </div>
+                            
+                            <div>
+                                <a type="button" class="btn btn-secondary" id="btnConsDesc" style="color: black; margin-bottom: 10px;" onclick="getMayorCons();" ><i class="fa fa-search"></i></a>
+                                <a type="button" class="btn btn-secondary" id="btnConsDesc" style="color: black; margin-bottom: 10px;" onclick="calcularAcumulado();" ><i class="fas fa-calculator"></i></a>
+                            </div>
+                            
+                            <div id="tbl-ex" style="margin-top: 10px;">    
+                                    <table id="example" class="table table-striped" cellspacing="0" style="display: none;">
+                                            
+                                    </table>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="view/xlsx.full.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script> 
+    <script type="text/javascript" src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script> 
+    <script src="https://kit.fontawesome.com/19d50627e7.js"></script>
+    
+    <script>
+        var arr2;
+        var tocons = 0;
+        var total_cons = 0;
+        var arrExcel = [];
+        function getFlow(e) {
+            
+            var pu;
+            var rf;
+            var tipo = e.files[0].type;
+
+            // Reader file from input chosse one
+            var f = e.files[0];
+            var reader = new FileReader();
+            reader.readAsArrayBuffer(f);
+            var jsonArr = []; // JSON que se envía al backend
+            reader.onload = function(e) {
+
+                var filex = e.target.result;
+
+                var data = new Uint8Array(filex);
+                var arr = new Array();
+                for (var i = 0; i !== data.length; ++i) arr[i] = String.fromCharCode(data[i]);
+                var bstr = arr.join("");
+
+                /* Call XLSX */
+                var workbook = XLSX.read(bstr, {
+                    type: "binary"
+                });
+
+                /* DO SOMETHING WITH workbook HERE */
+                var first_sheet_name = workbook.SheetNames[0];
+                /* Get worksheet */
+                var worksheet = workbook.Sheets[first_sheet_name];
+
+                //var arrExcel = [],
+                arrExcel = XLSX.utils.sheet_to_json(worksheet, {
+                    raw: false
+                });
+                
+                arrExcel.forEach(function (i, x) {
+                    var a = JSON.stringify(i);
+                    var material = i["Material"];
+                    var stkval = i["Val_stk_valor"];
+                    var peso = i["Peso"];
+                    var stkvaldo = i["Stock valorado"];
+                    var stv_dato = i["sv_dato"];
+                    var cantidad_sc = i["Cantidad SC"];
+                    var csc_dato = i["csc_dato"];
+                    var und_cons = i["Un_Consumidas"];
+                    var unc_dato = i["unc_dato"];
+                    var cdt_anular = i["Ctd_anulaciones"];
+                    var stktot = i["GradoRotStkTot"]; 
+                    var ctd_cons = i["Ctd_cons_total"];
+                    var num_entd = i["Núm_entradas SV"];
+                    var num_mov = i["Número mov-mat"];
+                    var num_sal_sv = i["Núm_sal_SV"];
+                    var num_sal_sc = i["Núm_Sal_ SC"];
+                    var ult_entrada = i["Última entrada"];
+                    
+                    var ult_salida = i["Última salida"];
+                    var ult_cons = i["Último consumo"];
+                    if(ult_salida === undefined)
+                        { ult_salida = ""; }
+                    if(ult_cons === undefined)
+                        { ult_cons = "";  }
+                        
+                    var ult_mov = i["Último movim"];
+                    
+                    tocons += parseInt(ctd_cons);
+                    
+                    var valx = material + "%" + stkval + "%" + peso + "%" + stkvaldo + "%" + stv_dato + "%" + cantidad_sc + "%" +
+                               csc_dato + "%" + und_cons + "%" + unc_dato + "%" + cdt_anular + "%" + stktot + "%" + ctd_cons + "%" +
+                               num_entd + "%" + num_mov + "%" + num_sal_sv + "%" + num_sal_sc + "%" + ult_entrada + "%" + ult_salida + "%" +
+                               ult_cons + "%" + ult_mov;
+                       
+                    cargarmd([{name:'jsonParam', value: valx}]);
+                });
+                
+                $('#total_cons').text(tocons);      
+                
+                $('#tbl-ex').find('div').remove();
+                $('#tbl-ex').append('<table id="example" class="table table-striped" cellspacing="0" style="display: none;"></table>');
+                $('#example').show();
+                $('#example').DataTable( {
+                    columnDefs: [ {
+                        targets:   0,
+                        'checkboxes': {
+                            'selectRow': true
+                        }
+                    } ],
+                    select: {
+                        'style': 'multi'
+                    },
+                    order: [[ 0, 'asc' ]],
+                    data: arrExcel,
+                    columns: [
+                        { title: "Material", data: "Material", cls:"matnr_code"},              
+                        { title: "Val.stk.valor.", data: "Val_stk_valor", cls: "valstk_code" },
+                        { title: "Moneda", data: "Peso", cls: "peso_code" },
+                        { title: "Stock valorado", data: "Stock valorado", cls: "stock_code" },
+                        { title: "Stock dato", data: "sv_dato", cls: "sv_dato_code"  },
+                        { title: "Cantidad SC", data: "Cantidad SC", cls: "ctdsc_code" },
+                        { title: "CSC dato", data: "csc_dato", cls: "csc_code" },
+                        { title: "Und. Consumidas", data: "Un_Consumidas", cls: "undcons_code" },
+                        { title: "Und dato", data: "unc_dato", cls: "undc_code" },
+                        { title: "Ctd Anulaciones", data: "Ctd_anulaciones", cls: "ctdanul_code" },
+                        { title: "GradoRotStkTot", data: "GradoRotStkTot", cls: "grdrot_code" },
+                        { title: "Ctd cons.total", data: "Ctd_cons_total", cls: "ctd.cons_code" },
+                        { title: "Núm. Entradas SV", data: "Núm_entradas SV", cls: "sv_dato_code" },
+                        { title: "Número mov-mat", data: "Número mov-mat", cls: "numov_code" },
+                        { title: "Núm. sal. SV", data: "Núm_sal_SV", cls: "salsv_code" },
+                        { title: "Núm. sal. SC", data: "Núm_Sal_ SC", cls: "salsc_code" },
+                        { title: "Última entrada", data: "Última entrada", cls: "ultent_code" },
+                        { title: "Última salida", data: "Última salida", cls: "ultsal_code" },
+                        { title: "Último consumo", data: "Último consumo", cls: "ultcon_code" },
+                        { title: "Último movim.", data: "Último movim", cls: "ultmov_code" }  
+                    ],
+                    "language": {
+                        "sProcessing":     "Procesando...",
+                        "sLengthMenu":     "Mostrar _MENU_ registros",
+                        "sZeroRecords":    "No se encontraron resultados",
+                        "sEmptyTable":     "Ningún dato disponible en esta tabla =(",
+                        "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                        "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+                        "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                        "sInfoPostFix":    "",
+                        "sSearch":         "Buscar:",
+                        "sUrl":            "",
+                        "sInfoThousands":  ",",
+                        "sLoadingRecords": "Cargando...",
+                        "oPaginate": {
+                            "sFirst":    "Primero",
+                            "sLast":     "Último",
+                            "sNext":     "Siguiente",
+                            "sPrevious": "Anterior"
+                        },
+                        "oAria": {
+                            "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                        },
+                        "buttons": {
+                            "copy": "Copiar",
+                            "colvis": "Visibilidad"
+                        }
+                    }
+                } );
+            }
+        }
+        
+        function getMayorCons(){
+            var a = "";
+            obtData([{name:'jsonParam', value: a}]);
+        }
+        
+        function table(arr){
+            arr2 = arr;
+            
+            //$('#total_cons').text(tocons); 
+            $('#tbl-ex').find('div').remove();
+            $('#tbl-ex').append('<table id="example" class="table table-striped" cellspacing="0" style="display: none;"></table>');
+            $('#example').show();
+            $('#example').DataTable( {
+                columnDefs: [ {
+                    targets:   0,
+                    'checkboxes': {
+                        'selectRow': true
+                    }
+                } ],
+                select: {
+                    'style': 'multi'
+                },
+                order: [[ 1, 'desc' ]],
+                data: arr,
+                columns: [
+                    { title: "Material", data: "MATNR", cls:"matnr_code"},              
+                    { title: "Ctd cons.total", data: "CTD_CONS_TOTAL", cls: "ctd.cons_code" }
+                ],
+                "language": {
+                    "sProcessing":     "Procesando...",
+                    "sLengthMenu":     "Mostrar _MENU_ registros",
+                    "sZeroRecords":    "No se encontraron resultados",
+                    "sEmptyTable":     "Ningún dato disponible en esta tabla =(",
+                    "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                    "sInfoPostFix":    "",
+                    "sSearch":         "Buscar:",
+                    "sUrl":            "",
+                    "sInfoThousands":  ",",
+                    "sLoadingRecords": "Cargando...",
+                    "oPaginate": {
+                        "sFirst":    "Primero",
+                        "sLast":     "Último",
+                        "sNext":     "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "oAria": {
+                        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    },
+                    "buttons": {
+                        "copy": "Copiar",
+                        "colvis": "Visibilidad"
+                    }
+                }
+            } );
+            
+            arr.forEach(function (i,x){
+                var ctd_cons = i["CTD_CONS_TOTAL"];
+                total_cons += parseInt(ctd_cons);
+            });
+        }
+        
+        function setUpDataExcel(arr){
+            
+        }
+        
+        var acumulado = 0;
+        var acu_fix = 0;
+        var acu;
+        var letra;
+        function calcularAcumulado(){
+            
+            
+            arr2.forEach(function (i, x){
+                
+                var matnr = i["MATERIAL"];
+                var descr = "";
+                var cons_total = i["CTD_CONS_TOTAL"];
+                var total = parseFloat(cons_total * 1) / parseFloat(total_cons);
+                var porcentaje = parseFloat(total * 100);
+                acumulado += porcentaje;
+                acu_fix = acumulado;              
+                //acu = acu_fix.toFixed();
+                var a = parseFloat("70.00")
+                
+                if(acumulado < a){
+                    letra = "A";
+                }
+                
+            });
+
+        }
+        /*
+            
+         */
+    </script>
+    </h:body>
+</html>
